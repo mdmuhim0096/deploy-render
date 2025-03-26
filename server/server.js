@@ -10,6 +10,10 @@ const io = new Server(server, {
     }
 });
 
+app.get("/test", (req, res) => {
+    res.send("i am ok")
+})
+
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
