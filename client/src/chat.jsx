@@ -1,49 +1,46 @@
-import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:3000"); // Change if your backend URL is different
+// src/Chat.js
+import React, { useState, useEffect } from 'react';
+import socket from './socket';
 
 const Chat = () => {
-    const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState("");
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
 
-    useEffect(() => {
-        // Listen for incoming messages
-        socket.on("message", (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
-        });
+  useEffect(() => {
+    socket.on('message', (msg) => {
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
 
-        return () => {
-            socket.disconnect(); // Cleanup on unmount
-        };
-    }, []);
-
-    const sendMessage = () => {
-        if (input.trim()) {
-            socket.emit("message", input);
-            setInput(""); // Clear input after sending
-        }
+    return () => {
+      socket.off('message');
     };
+  }, []);
 
-    return (
-        <div className="w-full h-96  bg-green-700 relative">
-            <div>
-                {messages.map((msg, index) => (
-                    <p key={index} className="text-white">{msg}</p>
-                ))}
-            </div>
-            <div className="flex items-center justify-between gap-2 absolute bottom-0 w-full p-2">
-                <input
-                    type="text"
-                    className="w-full h-8 focus:outline-none bg-green-600 placeholder:text-white text-white px-2 py-1 rounded-md"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Type a message..."
-                />
-                <button className="bg-green-500 rounded-md text-white px-2 py-1" onClick={sendMessage}>Send</button>
-            </div>
+  const sendMessage = () => {
+    if (message.trim()) {
+      socket.emit('message', message);
+      setMessage('');
+    }
+  };
+
+  return (
+    <div>
+      <h2>Chat App</h2>
+      <div>
+        <div>
+          {messages.map((msg, index) => (
+            <p key={index}>{msg}</p>
+          ))}
         </div>
-    );
+        <input
+          type="text"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <button onClick={sendMessage}>Send</button>
+      </div>
+    </div>
+  );
 };
 
 export default Chat;

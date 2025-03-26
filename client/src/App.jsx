@@ -1,9 +1,10 @@
+import React from "react";
 import Chat from "./chat";
 function App() {
   return (
     <div className="">
-    <h1>Socket.IO</h1>
-    <Chat />
+      <h1>Socket.IO</h1>
+      <Chat />
     </div>
   );
 }
